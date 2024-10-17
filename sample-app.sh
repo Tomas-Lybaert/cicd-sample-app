@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+DNS_SERVERS=("8.8.8.8" "127.0.0.53")
+
 mkdir -p tempdir
 mkdir -p tempdir/templates
 mkdir -p tempdir/static
@@ -21,5 +23,9 @@ _EOF_
 
 cd tempdir || exit
 docker build -t sampleapp .
+DNS_OPTIONS=""
+for dns in "${DNS_SERVERS[@]}"; do
+  DNS_OPTIONS+="--dns $dns "
+done
 docker run -t -d -p 5050:5050 --name samplerunning sampleapp
 docker ps -a 
